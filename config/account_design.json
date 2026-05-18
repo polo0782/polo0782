@@ -1,35 +1,49 @@
 {
   "account": {
-    "username": "YOUR_THREADS_USERNAME",
-    "note_url": "https://note.com/YOUR_USERNAME",
-    "target_audience": "副業・AI活用に興味のある25〜40代会社員",
-    "main_product": "note有料記事・デジタルコンテンツ"
+    "name": "拓郎｜札幌琴似｜自律神経番長",
+    "location": "札幌市西区琴似",
+    "business_type": "治療院",
+    "reservation_method": "DM",
+    "cta_dm_text": "DMで「予約」と送ってください"
   },
   "posting_schedule": {
     "times": ["07:00", "12:00", "21:00"],
     "timezone": "Asia/Tokyo",
     "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
   },
+  "target_symptoms": [
+    "自律神経の乱れ",
+    "不眠",
+    "めまい",
+    "慢性疲労",
+    "メンタル不調",
+    "ストレス",
+    "季節の変わり目の不調"
+  ],
   "hook_types": [
     "逆説型",
+    "共感型",
     "数字型",
-    "禁止型",
     "暴露型",
-    "共感型"
+    "禁止型"
   ],
   "cta_patterns": [
-    "詳細はnoteに書いた→{note_url}",
-    "続きはフォローして待ってて",
-    "後で使うから保存しといて",
-    "どっちが好き？リプで教えて"
+    "予約・相談はDMへ",
+    "DMで「予約」と送ってください",
+    "気になる人はDMで聞いてみて",
+    "後で読み返せるように保存しといて",
+    "これ、当てはまる人いる？リプで教えて"
   ],
   "themes_bank": [
-    "Claude活用術",
-    "Threads副業",
-    "AI×時間術",
-    "note収益化",
-    "自動化の仕組み",
-    "副業マインドセット",
-    "SNSアルゴリズム攻略"
+    "自律神経が乱れる意外な原因",
+    "不眠を繰り返す人の共通点",
+    "めまいと自律神経の関係",
+    "薬に頼る前にできること",
+    "季節の変わり目に体調が崩れる理由",
+    "ストレスが体に出るパターン",
+    "施術後の変化",
+    "病院で異常なしと言われた人へ",
+    "自律神経を整える朝の習慣",
+    "深呼吸が効かない理由"
   ]
 }
