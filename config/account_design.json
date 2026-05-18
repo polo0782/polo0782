@@ -1,0 +1,35 @@
+{
+  "account": {
+    "username": "YOUR_THREADS_USERNAME",
+    "note_url": "https://note.com/YOUR_USERNAME",
+    "target_audience": "副業・AI活用に興味のある25〜40代会社員",
+    "main_product": "note有料記事・デジタルコンテンツ"
+  },
+  "posting_schedule": {
+    "times": ["07:00", "12:00", "21:00"],
+    "timezone": "Asia/Tokyo",
+    "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  },
+  "hook_types": [
+    "逆説型",
+    "数字型",
+    "禁止型",
+    "暴露型",
+    "共感型"
+  ],
+  "cta_patterns": [
+    "詳細はnoteに書いた→{note_url}",
+    "続きはフォローして待ってて",
+    "後で使うから保存しといて",
+    "どっちが好き？リプで教えて"
+  ],
+  "themes_bank": [
+    "Claude活用術",
+    "Threads副業",
+    "AI×時間術",
+    "note収益化",
+    "自動化の仕組み",
+    "副業マインドセット",
+    "SNSアルゴリズム攻略"
+  ]
+}
