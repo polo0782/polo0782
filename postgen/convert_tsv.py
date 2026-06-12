@@ -45,7 +45,7 @@ def build_tsv(posts, config, links):
     delay_min = sch.get('link_delay_min', 30)
     delay_max = sch.get('link_delay_max', 60)
 
-    minute = random.randint(0, 59) if random_min else 0
+    minute = random.randint(0, 59) if random_min else sch.get('start_minute', 0)
     current_time = start_date.replace(hour=start_hour, minute=minute)
     current_day = current_time.date()
     links_today = 0
