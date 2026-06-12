@@ -1,0 +1,22 @@
+{
+  "spreadsheet_url": "ここにスプレッドシートのURLを張り付ける",
+  "start_cell": "A1",
+  "schedule": {
+    "start_date": "2026-03-05",
+    "start_hour": 8,
+    "interval": 90,
+    "random_minutes": true,
+    "links_enabled": false,
+    "links_per_day": 3,
+    "link_delay_min": 30,
+    "link_delay_max": 60
+  },
+  "generation": {
+    "posts_per_batch": 10,
+    "platform": "Threads"
+  },
+  "chrome": {
+    "data_dir": "chrome_data",
+    "profile": "Default"
+  }
+}

@@ -1,0 +1,14 @@
+# Chromeセッション（個人情報）
+chrome_data/
+
+# 生成済みポスト
+generated/*.txt
+generated/posted/
+
+# デバッグ用
+debug_screenshot.png
+
+# Python
+__pycache__/
+*.pyc
+.env
