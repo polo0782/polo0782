@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 data/scheduler.log
+_new_account_template/
+threads_account2_template.zip
