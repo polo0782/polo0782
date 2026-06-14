@@ -5,7 +5,7 @@
     "start_date": "2026-06-13",
     "start_hour": 21,
     "start_minute": 0,
-    "interval": 26,
+    "interval": 1440,
     "random_minutes": false,
     "links_enabled": false,
     "links_per_day": 3,
