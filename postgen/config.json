@@ -3,8 +3,8 @@
   "start_cell": "A1",
   "schedule": {
     "start_date": "2026-06-13",
-    "start_hour": 17,
-    "start_minute": 14,
+    "start_hour": 21,
+    "start_minute": 0,
     "interval": 26,
     "random_minutes": false,
     "links_enabled": false,
