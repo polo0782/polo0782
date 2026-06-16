@@ -10,7 +10,10 @@
     "links_enabled": false,
     "links_per_day": 3,
     "link_delay_min": 30,
-    "link_delay_max": 60
+    "link_delay_max": 60,
+    "posts_per_day": 10,
+    "day_start_hour": 9,
+    "day_end_hour": 23
   },
   "generation": {
     "posts_per_batch": 10,

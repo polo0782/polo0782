@@ -33,10 +33,44 @@ def parse_posts(text: str) -> list[dict]:
     return posts
 
 
+def day_slot_times(start_date, per_day, day_start, day_end, n):
+    """1日 per_day 本を day_start〜day_end 時に均等配置した時刻リストを返す"""
+    times = []
+    day = 0
+    while len(times) < n:
+        base = start_date + timedelta(days=day)
+        if per_day <= 1:
+            times.append(base.replace(hour=day_start, minute=0))
+        else:
+            span = (day_end - day_start) * 60
+            step = span / (per_day - 1)
+            for i in range(per_day):
+                times.append(base.replace(hour=day_start, minute=0)
+                             + timedelta(minutes=int(round(step * i))))
+        day += 1
+    return times[:n]
+
+
 def build_tsv(posts, config, links):
     """ポストリストからTSV行を構築"""
     sch = config['schedule']
     start_date = datetime.strptime(sch['start_date'], '%Y-%m-%d')
+
+    # 日内分散モード（posts_per_day 指定時）
+    per_day = sch.get('posts_per_day', 0)
+    if per_day and per_day > 0:
+        day_start = sch.get('day_start_hour', 9)
+        day_end = sch.get('day_end_hour', 23)
+        slots = day_slot_times(start_date, per_day, day_start, day_end, len(posts))
+        lines = []
+        for idx, post in enumerate(posts):
+            t = slots[idx]
+            d, h, m = t.strftime('%Y/%m/%d'), f"{t.hour}", f"{t.minute}"
+            for tweet in post['tweets']:
+                cell = tweet.strip().replace('\n', '\r').replace('"', '""')
+                lines.append(f'{idx + 1}\t"{cell}"\t{d}\t{h}\t{m}')
+        return '\n'.join(lines)
+
     start_hour = sch['start_hour']
     interval = sch['interval']
     random_min = sch.get('random_minutes', True)
@@ -95,6 +129,9 @@ def main():
     parser.add_argument('files', nargs='+', help='generated_posts_XXXX.txt')
     parser.add_argument('-d', '--start-date', help='開始日 (YYYY-MM-DD)')
     parser.add_argument('--start-hour', type=int, help='開始時 (0-23)')
+    parser.add_argument('--per-day', type=int, help='1日あたりの投稿数（指定で日内分散モード）')
+    parser.add_argument('--day-start', type=int, help='1日の投稿開始時 (時)')
+    parser.add_argument('--day-end', type=int, help='1日の投稿終了時 (時)')
     parser.add_argument('-c', '--clipboard', action='store_true', help='クリップボードにコピー')
     parser.add_argument('-o', '--output', help='出力ファイルパス')
     parser.add_argument('--links', action='store_true', default=None, help='リンク挿入を強制ON')
@@ -111,6 +148,12 @@ def main():
         config['schedule']['start_date'] = args.start_date
     if args.start_hour is not None:
         config['schedule']['start_hour'] = args.start_hour
+    if args.per_day is not None:
+        config['schedule']['posts_per_day'] = args.per_day
+    if args.day_start is not None:
+        config['schedule']['day_start_hour'] = args.day_start
+    if args.day_end is not None:
+        config['schedule']['day_end_hour'] = args.day_end
     if args.no_links:
         config['schedule']['links_enabled'] = False
     elif args.links:
