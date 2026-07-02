@@ -51,7 +51,7 @@ def day_slot_times(start_date, per_day, day_start, day_end, n):
     return times[:n]
 
 
-def build_tsv(posts, config, links):
+def build_tsv(posts, config, links, start_num=1):
     """ポストリストからTSV行を構築"""
     sch = config['schedule']
     start_date = datetime.strptime(sch['start_date'], '%Y-%m-%d')
@@ -68,7 +68,7 @@ def build_tsv(posts, config, links):
             d, h, m = t.strftime('%Y/%m/%d'), f"{t.hour}", f"{t.minute}"
             for tweet in post['tweets']:
                 cell = tweet.strip().replace('\n', '\r').replace('"', '""')
-                lines.append(f'{idx + 1}\t"{cell}"\t{d}\t{h}\t{m}')
+                lines.append(f'{idx + start_num}\t"{cell}"\t{d}\t{h}\t{m}')
         return '\n'.join(lines)
 
     start_hour = sch['start_hour']
@@ -83,7 +83,7 @@ def build_tsv(posts, config, links):
     current_time = start_date.replace(hour=start_hour, minute=minute)
     current_day = current_time.date()
     links_today = 0
-    group_num = 1
+    group_num = start_num
     lines = []
 
     for post in posts:
@@ -129,6 +129,11 @@ def main():
     parser.add_argument('files', nargs='+', help='generated_posts_XXXX.txt')
     parser.add_argument('-d', '--start-date', help='開始日 (YYYY-MM-DD)')
     parser.add_argument('--start-hour', type=int, help='開始時 (0-23)')
+    parser.add_argument('--start-minute', type=int, help='開始分 (0-59)。指定で分ランダム無効＋間隔モード')
+    parser.add_argument('--interval', type=int, help='投稿間隔（分）。指定で日内分散モードを無効化')
+    parser.add_argument('--start-num', type=int, help='A列の開始番号（デフォルト1。前バッチの続き番号に使う）')
+    parser.add_argument('--no-random', action='store_true', help='分のランダムを無効化')
+    parser.add_argument('--exclude', help='除外する投稿番号（1始まり・カンマ区切り。例: 7 / 2,5）')
     parser.add_argument('--per-day', type=int, help='1日あたりの投稿数（指定で日内分散モード）')
     parser.add_argument('--day-start', type=int, help='1日の投稿開始時 (時)')
     parser.add_argument('--day-end', type=int, help='1日の投稿終了時 (時)')
@@ -148,6 +153,16 @@ def main():
         config['schedule']['start_date'] = args.start_date
     if args.start_hour is not None:
         config['schedule']['start_hour'] = args.start_hour
+    if args.start_minute is not None:
+        config['schedule']['start_minute'] = args.start_minute
+        config['schedule']['random_minutes'] = False
+    if args.interval is not None:
+        config['schedule']['interval'] = args.interval
+    if args.no_random:
+        config['schedule']['random_minutes'] = False
+    # 間隔・開始分の明示指定は間隔モードを意味する（--per-day 明示があればそちらを優先）
+    if (args.interval is not None or args.start_minute is not None) and args.per_day is None:
+        config['schedule']['posts_per_day'] = 0
     if args.per_day is not None:
         config['schedule']['posts_per_day'] = args.per_day
     if args.day_start is not None:
@@ -164,7 +179,12 @@ def main():
         text = Path(fp).read_text(encoding='utf-8')
         all_posts.extend(parse_posts(text))
 
-    tsv = build_tsv(all_posts, config, links)
+    if args.exclude:
+        excluded = {int(x) for x in args.exclude.split(',')}
+        all_posts = [p for i, p in enumerate(all_posts, 1) if i not in excluded]
+        print(f'{sorted(excluded)}番を除外（残り{len(all_posts)}本）', file=sys.stderr)
+
+    tsv = build_tsv(all_posts, config, links, start_num=args.start_num or 1)
 
     if args.clipboard:
         import pyperclip

@@ -1,161 +1,58 @@
-# SNSポスト フルオート生成・スプレッドシート貼り付けシステム
+# SNSポスト生成・TSV変換システム
 
-このプロジェクトは Claude Code でSNSポストを生成し、Google スプレッドシートに貼り付けるシステムです。
+Claude CodeでThreads投稿を生成し、スプレッドシート貼り付け用TSVに変換するシステム。
 
-## あなたの役割
+## ルールの正（Single Source of Truth）
 
-`skills/knowledge.txt` のペルソナ・投稿構造・テンプレートと、`skills/themes.txt` の300ネタ＋ペルソナ再現ワード100選に基づき、`skills/prompt.md` の生成ルールに従ってバズるSNSポストを量産する。
+生成に関わるルールはここにコピーしない。以下を参照する：
 
----
+| 内容 | 場所 |
+|---|---|
+| ペルソナ・口調・禁止ワード・CTA・文字数・フックの型 | **ルート `CLAUDE.md`**（唯一の正） |
+| 読点・改行・助詞の細部 | `docs/日本語ルール抜粋.md` |
+| 伸びない投稿パターン（禁止リスト）＋頻出ワード | `knowledge/禁止リスト_頻出ワード.md` |
+| ネタ元（エピソード・見立て軸・バズ分析・参考アカウント） | `knowledge/`（episodes / insights / buzz / themes） |
+| 本人アカウントのテーマ120選・語彙参考 | `skills/themes.txt` |
 
 ## 基本ルール
 
-- **ポスト生成は Claude Code 自身が行う**（外部API不要）
-- **Task tool（サブエージェント）を使ってポスト生成をしてはいけない** ← ルールを知らないため粗悪なポストを生成する
-- **スプレッドシート貼り付けは** `paste_to_sheet.py`（Selenium）で自動化
-- 生成ポストは `generated/` に保存する
-- 貼り付け済みは `generated/posted/` に移動する
+- ポスト生成はClaude自身が行う。**Task tool（サブエージェント）でのポスト生成は禁止**（ルール未伝達で低品質になる。/batchでも同様）
+- 生成ポストは `generated/` に保存し、`posts/drafts/` に同期する。貼り付け済みは `generated/posted/` に移動する
+- `paste_to_sheet.py`（Seleniumシート貼り付け）と `--clipboard` は**ローカルPC専用**。リモート環境ではTSVファイルの送付までを行う
 
----
+## コマンド（.claude/commands/）
 
-## メニュー
+| コマンド | 用途 |
+|---|---|
+| `/generate` | 1バッチ10本生成 → drafts同期 → TSV/HTMLプレビュー |
+| `/batch N` | N日分まとめて生成 → 日内分散TSV |
+| `/revise` | 番号指定の修正を反映 → 再生成・再送付 |
+| `/tsv` | 番号・日時・間隔指定で貼り付け用TSV発行 |
+| `/log-episode` | 施術メモを `knowledge/episodes/` に登録 |
 
-ユーザーが「メニュー」と言ったら以下を表示する：
-
-```
-============================================
-  SNSポスト フルオート生成システム
-============================================
-
-  [1] ポスト生成（1バッチ）
-  [2] 複数日分まとめて生成 + 貼り付け
-  -------------------------------------------
-  [5] リンク設定（ON/OFF切替・links.json確認）
-  [6] スケジュール設定確認（config.json）
-  [7] 日付・時間設定
-  -------------------------------------------
-  [P] プロンプト変更（skills/prompt.md）
-  [K] knowledge変更（skills/knowledge.txt）
-  [K2] theme変更（skills/themes.txt）
-  [0] 終了
-```
-
-### 各メニューの動作
-
-- **[1]** ポスト生成フローを1回実行（下記参照）
-- **[2]** 日数を聞く → 日数分のバッチを連続生成 → TSV化 → スプレッドシート貼り付け
-- **[5]** リンク設定メニューを表示（下記参照）
-- **[6]** config.json の内容を表示・編集
-- **[7]** 日付・時間設定メニューを表示（下記参照）
-- **[P]** skills/prompt.md を表示 → 新しいプロンプトで上書き
-- **[K]** skills/knowledge.txt を表示 → 新しいknowledgeで上書き
-- **[K2]** skills/themes.txt を表示 → 新しいthemeで上書き
-- **[0]** 終了
-
----
-
-## [5] リンク設定メニュー
-
-ユーザーが「5」を選んだら以下を表示：
+## convert_tsv.py の主なオプション
 
 ```
-============================================
-  リンク設定
-============================================
-  現在の設定：
-  リンク挿入: {links_enabled} / 1日あたり: {links_per_day}本
-  遅延: {link_delay_min}〜{link_delay_max}分後
-============================================
-
-  [A] リンク挿入 ON/OFF 切替
-  [B] 1日あたりのリンク本数を変更
-  [C] links.json の内容を表示
-  [R] メインメニューに戻る
+python convert_tsv.py generated/generated_posts_XXXX.txt [オプション]
 ```
 
-### 各サブメニューの動作
+- `-d YYYY-MM-DD` / `--start-hour H` / `--start-minute M` / `--interval 分`：開始日時と間隔（分・間隔を指定すると間隔モードになる）
+- `--start-num N`：A列の開始番号（前バッチの続き番号に使う）
+- `--exclude 7`／`--exclude 2,5`：指定番号の投稿を除外（1始まり）
+- `--no-links`：リンク行なし ／ `--no-random`：分のランダム無効
+- `--per-day 10 --day-start 9 --day-end 23`：日内分散モード（複数日バッチ用）
+- `-o ファイル`：出力先
 
-- **[A]** config.json の `links_enabled` を true/false でトグル切替。変更後に「リンク挿入: ON」or「リンク挿入: OFF」と表示
-- **[B]** 「1日あたりのリンク本数を入力」→ config.json の `links_per_day` を更新
-- **[C]** links.json の内容を表示
-- **[R]** メインメニューに戻る
+確認用HTML：`python tsv_preview.py generated/xxx.tsv`（同名.htmlを生成）
 
-変更後は更新内容を表示し、サブメニューに留まる。
-
----
-
-## [7] 日付・時間設定メニュー
-
-ユーザーが「7」を選んだら以下を表示：
-
+例（前回117の続き・7/2の5:05から86分おき・7番除外）：
 ```
-============================================
-  日付・時間設定
-============================================
-  現在の設定：
-  開始日: {start_date} / 開始時: {start_hour}時
-  間隔: {interval}分 / 分ランダム: {random_minutes}
-============================================
-
-  [A] 開始日を変更
-  [B] 開始時刻（時）を変更
-  [C] 投稿間隔を変更
-  [D] 分のランダム ON/OFF
-  [R] メインメニューに戻る
+python convert_tsv.py generated/generated_posts_0017.txt --no-links \
+  --start-num 118 -d 2026-07-02 --start-hour 5 --start-minute 5 --interval 86 --exclude 7 \
+  -o generated/generated_posts_0017_seq118.tsv
 ```
-
-### 各サブメニューの動作
-
-- **[A]** 「開始日を入力（例: 2026-03-05）」→ config.json の `start_date` を更新
-- **[B]** 「開始時刻を入力（0〜23）」→ config.json の `start_hour` を更新
-- **[C]** 「投稿間隔を入力（分）」→ config.json の `interval` を更新
-- **[D]** random_minutes の true/false をトグル切替
-- **[R]** メインメニューに戻る
-
-変更後は更新内容を表示し、サブメニューに留まる。
-
----
-
-## ポスト生成フロー
-
-ユーザーが「スタート」「生成」「ポスト作って」と言ったら、**ノンストップで以下を実行する**：
-
-### Step 1: ポスト生成（10件）
-1. `skills/prompt.md`、`skills/knowledge.txt`、`skills/themes.txt` を読む
-2. knowledge.txt の型01〜型21 + themes.txt のペルソナ・頻出ワード・テーマを組み合わせる
-3. ルールに従い10件のポストを生成する（形式A 6〜7本 + 形式B 3〜4本）
-4. 出力フォーマット通りに出力する（前置き・説明なし）
-
-**文字数必守：単ツイート200〜500字、ツリー1ツイートあたり200〜500字**
-**型必守：1ファイル内で同じ型を2回使わない（型01〜型21を参照）**
-**頻出ワード必守：各投稿にカテゴリ1・2の語彙を2〜3個入れる**
-
-### Step 2: ファイル保存
-1. 生成テキストを `generated/generated_posts_XXXX.txt` に保存（XXXXは連番）
-2. 連番は既存ファイルの最大番号 + 1
-
-### Step 3: TSV変換 + クリップボードコピー
-以下のコマンドを実行する：
-```bash
-python convert_tsv.py generated/generated_posts_XXXX.txt --clipboard
-```
-- `convert_tsv.py` が自動で `config.json`・`links.json` を読み込み、TSVを生成してクリップボードにコピーする
-- 日付上書き: `--start-date YYYY-MM-DD`、時刻上書き: `--start-hour N`
-- 複数ファイル対応: `python convert_tsv.py file1.txt file2.txt --clipboard`
-
-### Step 4: スプレッドシート貼り付け（Selenium）
-以下のコマンドを実行する：
-```bash
-python paste_to_sheet.py
-```
-- Selenium がクリップボードの TSV をスプレッドシートに自動貼り付け
-- 初回のみ `python paste_to_sheet.py --login` で Google ログインが必要
-
----
 
 ## ポスト抽出ルール
-
-生成テキストからポストを抽出する方法：
 
 ### フォーマット1（推奨）
 ```
@@ -165,48 +62,25 @@ python paste_to_sheet.py
 ```
 `[ポスト本文]` と `==========` の間のテキストを抽出。
 
-### フォーマット2
-`───────────────` セパレータで区切られたセクション。
-最初のセクション（前置き）と短い締めセクションはスキップ。
-
 ### ツリーポストの分割
 `■Nツイート目` で始まる行がある場合、各ツイートを個別行として扱う。
 同じツリー内のツイートは同じA列番号を共有する。
-
----
 
 ## ファイル構成
 
 ```
 postgen/
 ├── CLAUDE.md              ← このファイル
-├── config.json            ← 設定（スプレッドシートURL、スケジュール等）
+├── config.json            ← 設定（スケジュール既定値。実運用は都度オプションで上書き）
 ├── convert_tsv.py         ← TSV変換スクリプト
-├── paste_to_sheet.py      ← Seleniumスプレッドシート貼り付け（ローカルPC専用）
-├── links.json             ← 宣伝リンクパターン
+├── tsv_preview.py         ← TSV→スプレッドシート風HTMLプレビュー
+├── paste_to_sheet.py      ← Seleniumシート貼り付け（ローカルPC専用）
+├── links.json             ← 宣伝リンクパターン（現在リンクは不使用）
 ├── skills/
-│   ├── prompt.md          ← ポスト生成ルール・出力フォーマット
-│   ├── knowledge.txt      ← 型01〜型21（投稿構造パターン）
-│   ├── themes.txt         ← 拓郎本人のペルソナ・頻出ワード100選・テーマ120選＋伸びない投稿パターン（禁止リスト）
-│   ├── themes_takuro.txt  ← 本人アカウント分析の原本
-│   └── themes_{ayano,datyou,iguti}.txt ← 参考アカウント分析
-├── generated/             ← 生成ポスト保存先
+│   └── themes.txt         ← 本人アカウント分析（テーマ120選・語彙参考）
+├── generated/             ← 生成ポスト・TSV・HTML保存先
 │   └── posted/            ← 貼り付け済み
 └── manual/manual.pdf      ← 元システムのマニュアル
 ```
 
-※ スラッシュコマンド（/generate /batch /menu）はリポジトリルートの `.claude/commands/` にある。
-※ themes.txt 末尾の「伸びない投稿パターン（禁止リスト）」は実アカウント970件の分析結果。生成時に必ず守ること。
-※ 型04の「アフィリンク配置」・型07の「note誘導」はこのアカウントでは使わず、CTAを「フォロー保存」か「DM予約」に置き換える。
-
-## テーマ管理
-
-skills/themes.txt で管理する。テーマを変更したい場合は [K2] メニューから編集する。
-
-## 重要
-
-- ポスト生成中はツール・ファイル作成・コード実行を使わず、ポストテキストをそのまま出力すること
-- ポスト完成後に Write ツールで generated/ に保存すること
-- スプレッドシート貼り付けは `python paste_to_sheet.py` で行う（Selenium）
-- **Task tool（サブエージェント）でポスト生成をしてはいけない**（ルール未伝達により低品質な出力になる）
-- バッチ生成（[2]、/batch）でも同様。Claude自身がすべてのポストを直接生成すること
+※ 旧 `skills/prompt.md`・`skills/knowledge.txt`（型01〜21）・`skills/themes_*.txt` は2026-07-02の再設計で削除（経緯は `docs/2026-07-02_Skill監査と再設計.md`。日本語ルールは `docs/日本語ルール抜粋.md` に、禁止リストは `knowledge/禁止リスト_頻出ワード.md` に移設。参考アカウント分析は `knowledge/themes/` が正）
