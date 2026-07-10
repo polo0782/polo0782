@@ -43,7 +43,7 @@ python convert_tsv.py generated/generated_posts_XXXX.txt [オプション]
 - `--per-day 10 --day-start 9 --day-end 23`：日内分散モード（複数日バッチ用）
 - `-o ファイル`：出力先
 
-確認用HTML：`python tsv_preview.py generated/xxx.tsv`（同名.htmlを生成）
+確認用HTML：`python tsv_preview.py generated/xxx.tsv`（同名.htmlを生成）※**2026-07-08以降、HTMLプレビューは使わない**（見にくいと本人フィードバック）。確認は①投稿本文をチャットにそのまま貼る②`.txt`ファイルを送付、の2本立てにする。`.tsv`は貼り付け用に引き続き生成する
 
 例（前回117の続き・7/2の5:05から86分おき・7番除外）：
 ```
