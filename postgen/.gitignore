@@ -3,6 +3,7 @@ chrome_data/
 
 # 生成済みポスト
 generated/*.txt
+generated/*.tsv
 generated/posted/
 
 # デバッグ用
