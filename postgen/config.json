@@ -3,9 +3,9 @@
   "start_cell": "A1",
   "schedule": {
     "start_date": "2026-07-31",
-    "start_hour": 6,
+    "start_hour": 9,
     "start_minute": 14,
-    "interval": 240,
+    "interval": 210,
     "random_minutes": false,
     "links_enabled": false,
     "links_per_day": 3,
