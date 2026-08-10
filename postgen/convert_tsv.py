@@ -51,6 +51,50 @@ def day_slot_times(start_date, per_day, day_start, day_end, n):
     return times[:n]
 
 
+def parse_times_spec(spec: str, start_date):
+    """--times の指定を datetime のリストにする。
+
+    例) "6:06,11:01+48x7"
+      6:06 に1本、11:01から48分刻みで7本 → 合計8本
+    書式：
+      HH:MM              … その時刻に1本
+      HH:MM+<間隔>x<本数> … その時刻から<間隔>分刻みで<本数>本
+    """
+    times = []
+    for chunk in spec.split(','):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        if '+' in chunk:
+            head, tail = chunk.split('+', 1)
+            step, _, count = tail.partition('x')
+            step = int(step)
+            count = int(count) if count else 1
+        else:
+            head, step, count = chunk, 0, 1
+        hh, _, mm = head.partition(':')
+        t = start_date.replace(hour=int(hh), minute=int(mm or 0))
+        for i in range(count):
+            times.append(t + timedelta(minutes=step * i))
+    return times
+
+
+def build_tsv_at_times(posts, times):
+    """時刻を明示指定してTSVを組む（分割スケジュール用）。リンクは挿入しない。"""
+    if len(times) < len(posts):
+        raise SystemExit(
+            f'--times で指定した時刻が {len(times)} 個、投稿が {len(posts)} 本。時刻が足りません'
+        )
+    lines = []
+    for group_num, (post, t) in enumerate(zip(posts, times), start=1):
+        d = t.strftime('%Y/%m/%d')
+        for tweet in post['tweets']:
+            cell_text = tweet.strip().replace('\n', '\r')
+            escaped = cell_text.replace('"', '""')
+            lines.append(f'{group_num}\t"{escaped}"\t{d}\t{t.hour}\t{t.minute}')
+    return '\n'.join(lines)
+
+
 def build_tsv(posts, config, links):
     """ポストリストからTSV行を構築"""
     sch = config['schedule']
@@ -136,6 +180,11 @@ def main():
     parser.add_argument('-o', '--output', help='出力ファイルパス')
     parser.add_argument('--links', action='store_true', default=None, help='リンク挿入を強制ON')
     parser.add_argument('--no-links', action='store_true', help='リンク挿入を強制OFF')
+    parser.add_argument(
+        '--times',
+        help='時刻を明示指定（分割スケジュール用）。例 "6:06,11:01+48x7" '
+             '＝6:06に1本、11:01から48分刻みで7本。リンクは挿入されない',
+    )
     args = parser.parse_args()
 
     base = Path(__file__).parent
@@ -164,7 +213,12 @@ def main():
         text = Path(fp).read_text(encoding='utf-8')
         all_posts.extend(parse_posts(text))
 
-    tsv = build_tsv(all_posts, config, links)
+    if args.times:
+        sd = config['schedule']['start_date']
+        base = datetime.strptime(sd, '%Y-%m-%d') if isinstance(sd, str) else sd
+        tsv = build_tsv_at_times(all_posts, parse_times_spec(args.times, base))
+    else:
+        tsv = build_tsv(all_posts, config, links)
 
     if args.clipboard:
         import pyperclip
