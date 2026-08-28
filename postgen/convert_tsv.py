@@ -16,8 +16,10 @@ def parse_posts(text: str) -> list[dict]:
         block = block.strip()
         if not block:
             continue
-        if block.startswith('[ポスト本文]'):
-            block = block[len('[ポスト本文]'):].strip()
+        if '[ポスト本文]' in block:
+            # 先頭にヘッダー注釈（■や※で始まる設計メモ）が付いてる事があるので、
+            # [ポスト本文] より前は全部捨てて、タグより後ろだけを本文として使う
+            block = block.split('[ポスト本文]', 1)[1].strip()
         if not block:
             continue
 
