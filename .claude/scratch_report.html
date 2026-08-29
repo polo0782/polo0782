@@ -1,0 +1,370 @@
+<title>自律神経市場調査レポート</title>
+<style>
+:root{
+  --paper:#f2efe8;
+  --paper-raised:#ffffff;
+  --ink:#23241e;
+  --ink-soft:#635f52;
+  --line:#dcd6c8;
+  --accent:#31504a;
+  --accent-soft:#c3d3cd;
+  --gold:#a9762f;
+  --gold-soft:#ecdcc0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1b1c18;
+    --paper-raised:#232420;
+    --ink:#e9e5d8;
+    --ink-soft:#a49e8c;
+    --line:#3a392f;
+    --accent:#8bb3a9;
+    --accent-soft:#2c3d38;
+    --gold:#e0b565;
+    --gold-soft:#3a3021;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1b1c18;
+  --paper-raised:#232420;
+  --ink:#e9e5d8;
+  --ink-soft:#a49e8c;
+  --line:#3a392f;
+  --accent:#8bb3a9;
+  --accent-soft:#2c3d38;
+  --gold:#e0b565;
+  --gold-soft:#3a3021;
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  margin:0;
+  font-family:"Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+  line-height:1.8;
+}
+.wrap{
+  max-width:880px;
+  margin:0 auto;
+  padding:64px 28px 96px;
+}
+h1,h2,h3{
+  font-family:"Shippori Mincho","Noto Serif JP",serif;
+  text-wrap:balance;
+  font-weight:600;
+  color:var(--ink);
+}
+.eyebrow{
+  font-size:12.5px;
+  letter-spacing:.14em;
+  color:var(--accent);
+  font-weight:700;
+  text-transform:uppercase;
+}
+header.hero{
+  border-bottom:1px solid var(--line);
+  padding-bottom:36px;
+  margin-bottom:44px;
+}
+header.hero h1{
+  font-size:clamp(30px,4.4vw,42px);
+  margin:14px 0 10px;
+  letter-spacing:.01em;
+}
+header.hero .sub{
+  font-size:16.5px;
+  color:var(--ink-soft);
+  max-width:62ch;
+}
+.meta-row{
+  display:flex;
+  gap:22px;
+  flex-wrap:wrap;
+  margin-top:22px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+  font-variant-numeric:tabular-nums;
+}
+.meta-row span b{color:var(--ink);font-weight:700;}
+
+section{margin-bottom:56px;}
+section > h2{
+  font-size:24px;
+  margin:0 0 6px;
+}
+section > .lead{
+  color:var(--ink-soft);
+  font-size:14.5px;
+  margin:0 0 22px;
+  max-width:60ch;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  border-radius:2px;
+  overflow:hidden;
+}
+.stat{
+  background:var(--paper-raised);
+  padding:20px 18px;
+}
+.stat .num{
+  font-family:"Shippori Mincho",serif;
+  font-size:30px;
+  font-variant-numeric:tabular-nums;
+  color:var(--accent);
+  line-height:1.1;
+}
+.stat .label{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin-top:6px;
+}
+
+.two-col{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:32px;
+}
+@media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+
+.card{
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:22px 24px;
+}
+.card h3{
+  font-size:15px;
+  margin:0 0 12px;
+  color:var(--accent);
+}
+.card ul{
+  margin:0;
+  padding-left:18px;
+  font-size:14.5px;
+}
+.card li{margin-bottom:8px;}
+.card li:last-child{margin-bottom:0;}
+
+.tag-cluster{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.tag{
+  font-size:13px;
+  padding:6px 12px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:var(--paper-raised);
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+.tag.hot{
+  background:var(--gold-soft);
+  border-color:var(--gold-soft);
+  color:var(--gold);
+  font-weight:700;
+}
+.tag-group{margin-bottom:18px;}
+.tag-group .tg-label{
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-bottom:8px;
+  letter-spacing:.03em;
+}
+
+.quote-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media (max-width:640px){.quote-grid{grid-template-columns:1fr;}}
+blockquote{
+  margin:0;
+  padding:16px 18px;
+  background:var(--accent-soft);
+  border-left:3px solid var(--accent);
+  border-radius:0 3px 3px 0;
+  font-size:14px;
+  color:var(--ink);
+}
+blockquote .likes{
+  display:block;
+  margin-top:8px;
+  font-size:12px;
+  color:var(--accent);
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+
+.theme-cat{
+  border-top:1px solid var(--line);
+  padding-top:18px;
+  margin-top:18px;
+}
+.theme-cat .cat-name{
+  font-family:"Shippori Mincho",serif;
+  font-size:17px;
+  margin-bottom:10px;
+}
+.theme-cat ol{
+  margin:0;
+  padding-left:20px;
+  font-size:14px;
+  columns:2;
+  column-gap:28px;
+}
+@media (max-width:640px){.theme-cat ol{columns:1;}}
+.theme-cat li{margin-bottom:7px;break-inside:avoid;}
+
+.note{
+  background:var(--gold-soft);
+  border:1px solid var(--gold-soft);
+  border-radius:3px;
+  padding:16px 20px;
+  font-size:14px;
+  color:var(--ink);
+}
+.note b{color:var(--gold);}
+
+footer{
+  margin-top:64px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
+  font-size:12.5px;
+  color:var(--ink-soft);
+}
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Market Research — 自律神経・トラウマ系アカウント調査</div>
+    <h1>「異常なし」の女性たちは、何に反応するか</h1>
+    <p class="sub">Threads上で自律神経・更年期・パニック障害を発信する複数アカウントの投稿514件を、いいね順に分析。拓郎さんの発信（施術エピソード×トラウマ除去）が狙うべき勝ち筋を特定した。</p>
+    <div class="meta-row">
+      <span>分析対象 <b>514投稿</b></span>
+      <span>最高いいね <b>32,000</b></span>
+      <span>出力ファイル <b>themes.txt</b></span>
+      <span>作成日 <b>2026-08-29</b></span>
+    </div>
+  </header>
+
+  <section>
+    <div class="stat-grid">
+      <div class="stat"><div class="num">32,000</div><div class="label">最高いいね（初診の壁エピソード）</div></div>
+      <div class="stat"><div class="num">7軒+</div><div class="label">「病院で異常なし」を経て辿り着く人の平均的な受診遍歴</div></div>
+      <div class="stat"><div class="num">30〜50代</div><div class="label">最も切実に反応する年代層</div></div>
+      <div class="stat"><div class="num">6割超</div><div class="label">上位投稿に共通する「相談・共感」型の割合</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>この市場で何が伸びているか</h2>
+    <p class="lead">上位投稿を並べると、伸びているのは大きく3つの型に分かれる。</p>
+    <div class="two-col">
+      <div class="card">
+        <h3>① 当事者の叫び（最多）</h3>
+        <ul>
+          <li>「病院で異常なし」と言われ続けた末の孤独と絶望</li>
+          <li>「同じ方いますか」で仲間を探す投稿が量産的に伸びる</li>
+          <li>症状の羅列だけでも共感が集まる（解決策なしでも可）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>② 専門家の断言</h3>
+        <ul>
+          <li>「25,000人診てきて」など実績の数を出して権威づけ</li>
+          <li>「誰も言わないから言う」型の逆張りフックが強い</li>
+          <li>意外な因果関係（足首→脳血流、上咽頭→自律神経）</li>
+        </ul>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="card">
+      <h3>③ 回復の証言（保存されやすい）</h3>
+      <ul>
+        <li>「今どんなに辛くても良くなる」という宣言型の投稿</li>
+        <li>過去の症状を箇条書きで並べ、今の回復と対比させる構成</li>
+        <li>読者に「私もこうなれるかも」という希望を持たせる</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>反響の高かった生の声</h2>
+    <p class="lead">読者が実際に投稿した言葉。フックや共感ポイントの参考に。</p>
+    <div class="quote-grid">
+      <blockquote>「予約のない方は診られません」と告げられて帰っていく青年の背中を見て、胸が詰まった。<span class="likes">32,000 いいね</span></blockquote>
+      <blockquote>病院を7軒回っても全部「異常なし」。もう一生このままなんだって、本気で絶望してた。<span class="likes">173 いいね</span></blockquote>
+      <blockquote>誰にも見えないけど、ずっと脳内でフルマラソンしてる感じ。…これ、当てはまる人いる？<span class="likes">5,097 いいね</span></blockquote>
+      <blockquote>25,000人を診てきて、ずっと引っかかっていることがあります。<span class="likes">408 いいね</span></blockquote>
+    </div>
+  </section>
+
+  <section>
+    <h2>頻出ワードの傾向</h2>
+    <p class="lead">投稿から抽出した頻出語。★の多いものほど市場全体で使われている＝差別化しにくい語、少ないものほど拓郎さんの独自語彙で埋めるべき余地。</p>
+    <div class="tag-group">
+      <div class="tg-label">超頻出（誰もが使う・埋没しやすい）</div>
+      <div class="tag-cluster">
+        <span class="tag hot">自律神経失調症</span>
+        <span class="tag hot">異常なし</span>
+        <span class="tag hot">めまい・動悸</span>
+        <span class="tag hot">病院で異常なし</span>
+        <span class="tag hot">しんどい</span>
+      </div>
+    </div>
+    <div class="tag-group">
+      <div class="tg-label">専門家断言系（拓郎さんの語り口に近い）</div>
+      <div class="tag-cluster">
+        <span class="tag">誰も言わないから言う</span>
+        <span class="tag">正直に言います</span>
+        <span class="tag">結論から言うと</span>
+        <span class="tag">共通点が3つあります</span>
+        <span class="tag">こっそり教えます</span>
+      </div>
+    </div>
+    <div class="tag-group">
+      <div class="tg-label">感情・希望系（保存を誘う）</div>
+      <div class="tag-cluster">
+        <span class="tag">あなたのせいじゃない</span>
+        <span class="tag">良くなっていくよ</span>
+        <span class="tag">同じ方いますか</span>
+        <span class="tag">絶望</span>
+        <span class="tag">普通に生活したい</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>拓郎さんが取るべき勝ち筋</h2>
+    <p class="lead">この市場のほとんどは「解剖・身体解説」か「症状の叫び」で止まっている。原因を一点に絞る施術エピソードとトラウマ除去は、この市場にほぼ存在しない差別化ポイント。</p>
+    <div class="theme-cat">
+      <div class="cat-name">最優先で使うべきテーマ</div>
+      <ol>
+        <li>「今日来た〇〇の人」の施術エピソード＋数値変化</li>
+        <li>眼球チェック→書き出し→除去、の工程を見せる投稿</li>
+        <li>「病院で異常なし」の理由を私が言い切る投稿</li>
+        <li>育ち・トラウマの背景を具体で語る投稿（解剖に逃げない）</li>
+        <li>「今どんなに辛くても良くなる」型の希望投稿</li>
+        <li>DMの先に何が起きるかを見せる導線投稿</li>
+      </ol>
+    </div>
+    <div class="note">
+      投稿テーマ120選・頻出ワード100選・文体トーン集の全文は <b>themes.txt</b> に保存済み。バッチ生成時はこのファイルを参照する。
+    </div>
+  </section>
+
+  <footer>
+    自律神経・トラウマ系Threadsアカウント 514投稿（いいね順）の分析に基づく市場調査レポート。個人が特定される情報は含まない。
+  </footer>
+
+</div>
