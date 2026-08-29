@@ -248,11 +248,11 @@ footer{
   <header class="hero">
     <div class="eyebrow">Market Research — 自律神経・トラウマ系アカウント調査</div>
     <h1>「異常なし」の女性たちは、何に反応するか</h1>
-    <p class="sub">Threads上で自律神経・更年期・パニック障害を発信する複数アカウントの投稿514件を、いいね順に分析。拓郎さんの発信（施術エピソード×トラウマ除去）が狙うべき勝ち筋を特定した。</p>
+    <p class="sub">Threads・X（旧Twitter）で自律神経・更年期・パニック障害を発信するアカウントの投稿671件を、いいね順に分析。拓郎さんの発信（施術エピソード×トラウマ除去）が狙うべき勝ち筋を特定した。</p>
     <div class="meta-row">
-      <span>分析対象 <b>514投稿</b></span>
+      <span>分析対象 <b>671投稿</b>（Threads 514 / X 157）</span>
       <span>最高いいね <b>32,000</b></span>
-      <span>出力ファイル <b>themes.txt</b></span>
+      <span>出力ファイル <b>knowledge/themes/themes_jiritsu_shinkei_seiri.txt</b></span>
       <span>作成日 <b>2026-08-29</b></span>
     </div>
   </header>
@@ -310,6 +310,30 @@ footer{
   </section>
 
   <section>
+    <h2>X（旧Twitter）を加えて見えた違い</h2>
+    <p class="lead">同じキーワードでもプラットフォームで反応する層と内容が違う。追加分析した157件から、Threadsだけでは見えなかった角度が2つ見つかった。</p>
+    <div class="two-col">
+      <div class="card">
+        <h3>Xは「社会風刺・あるある・ニュース」寄り</h3>
+        <ul>
+          <li>実名の有名人の自律神経失調症公表など、ニュース性の高い投稿が突出して伸びる（拓郎さんの発信には転用不可）</li>
+          <li>自虐ネタ・下ネタ寄りの投稿も伸びるが、男らしい言い切りトーンとは相性が悪いため不採用</li>
+          <li>反ワクチン・マスク弊害など医療デマ系の投稿も一定数あるが、方針上扱わない</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>拾うべき新しい切り口が2つ</h3>
+        <ul>
+          <li><b style="color:var(--accent)">スティグマへの怒り</b>：「サボり・甘え」と教師や上司に言われた悔しさが強く共感される</li>
+          <li><b style="color:var(--accent)">頑張れる人ほど壊れる逆説</b>：「無理が効く人ほど突然バーンアウトする」という見立てが刺さる</li>
+        </ul>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+    <blockquote style="max-width:100%">自分は「自律神経失調症」です。と教師に言っても、未だに「はいはいサボり病ですね。」と陰で言う教師はすごく多い…<span class="likes">X: 455（概算）</span></blockquote>
+  </section>
+
+  <section>
     <h2>頻出ワードの傾向</h2>
     <p class="lead">投稿から抽出した頻出語。★の多いものほど市場全体で使われている＝差別化しにくい語、少ないものほど拓郎さんの独自語彙で埋めるべき余地。</p>
     <div class="tag-group">
@@ -356,15 +380,16 @@ footer{
         <li>育ち・トラウマの背景を具体で語る投稿（解剖に逃げない）</li>
         <li>「今どんなに辛くても良くなる」型の希望投稿</li>
         <li>DMの先に何が起きるかを見せる導線投稿</li>
+        <li>「サボりじゃない」と言い切り、無理解への怒りを代弁する投稿</li>
       </ol>
     </div>
     <div class="note">
-      投稿テーマ120選・頻出ワード100選・文体トーン集の全文は <b>themes.txt</b> に保存済み。バッチ生成時はこのファイルを参照する。
+      投稿テーマ120選＋追加インサイト・頻出ワード100選・文体トーン集の全文は <b>knowledge/themes/themes_jiritsu_shinkei_seiri.txt</b> に保存済み。元データは <b>data/post_logs/</b> 配下（Threads・X各ファイル）。バッチ生成時はこのファイルを参照する。
     </div>
   </section>
 
   <footer>
-    自律神経・トラウマ系Threadsアカウント 514投稿（いいね順）の分析に基づく市場調査レポート。個人が特定される情報は含まない。
+    自律神経・トラウマ系アカウント Threads 514投稿＋X（旧Twitter）157投稿、計671投稿（いいね順）の分析に基づく市場調査レポート。個人が特定される情報は含まない。
   </footer>
 
 </div>
